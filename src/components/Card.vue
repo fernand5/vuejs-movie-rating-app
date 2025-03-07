@@ -24,8 +24,14 @@ function setRating(i){
 
 </script>
 <template>
-    <div class="max-w-md rounded-xl overflow-hidden shadow-2xl bg-white flex flex-col">
-    <img class="h-[520px] overflow-hidden w-full relative" :src="image" :alt="name">
+    <div class="max-w-md rounded-xl overflow-hidden shadow-2xl bg-white flex flex-col  relative">
+        <div class="absolute text-black right-0 top-0">
+            <StarIcon class="text-yellow-500 w-20 h-20" />
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <span class="text-2xl font-bold">{{ rating ?? '-' }}</span>
+            </div>
+          </div>
+        <img class="h-[520px] overflow-hidden w-full " :src="image" :alt="name">
     
     <div class="px-6 py-4 flex flex-col flex-grow">
         <div class="font-sm text-3xl mb-2">{{ name }}</div>
