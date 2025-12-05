@@ -1,12 +1,11 @@
 <script setup>
-import { computed, reactive, ref } from "vue";
+import { computed, reactive, ref, defineAsyncComponent} from "vue";
 import MovieItem from "./MovieItem.vue";
-import MovieForm from "./MovieForm.vue";
-import AppModal from "./AppModal.vue";
-/*
-These are Icons that you can use, of course you can use other ones if you prefer.
-*/
 import { items } from "./movies.json";
+
+// async components
+const AppModal = defineAsyncComponent(() => import("@/AppModal.vue"));
+const MovieForm = defineAsyncComponent(() => import("@/MovieForm.vue"));
 
 const movies = ref(items);
 
@@ -176,11 +175,11 @@ function removeRatings() {
 
 <template>
   <div class="app">
-    <div v-if="showMovieForm" class="modal-wrapper">
-      <AppModal
+      <AppModal v-if="showMovieForm"
       :title="form.id ? 'Edit Movie' : 'Add Movie'"
       @close="hideForm">
-        <MovieForm 
+        <MovieForm  
+        v-if="showMovieForm"
         :modelValue="form"
         :errors="errors"
         :genres="genres"
@@ -188,7 +187,6 @@ function removeRatings() {
         @cancel="hideForm"
         />
       </AppModal>
-    </div>
     <div class="movie-actions-list-wrapper">
       <div class="movie-actions-list-info">
         <span>Total Movies: {{ totalMovies }}</span>
