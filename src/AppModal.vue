@@ -1,4 +1,6 @@
 <script setup>
+import { XMarkIcon } from "@heroicons/vue/20/solid";
+
 defineProps({
     title: {
         required: true,
@@ -15,7 +17,9 @@ const emit = defineEmits(['close']);
     <div class="modal-wrapper-inner">
         <div class="modal-header items-center text-xl font-bold mb-4">
             <span>{{ title }}</span>
-            <button class="modal-close-button" @click="emit('close')">&times;</button>
+            <button class="modal-close-button" @click="emit('close')">
+                <XMarkIcon class="w-8 h-8" />
+            </button>
         </div>
         
         <div class="modal-wrapper-inner">
