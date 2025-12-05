@@ -7,6 +7,13 @@
     @apply max-w-full flex flex-col items-center justify-center h-screen mx-auto relative space-y-8;
 }
 
+.modal-header {
+    text-align: center;
+}
+.modal-header .modal-close-button {
+    float: inline-end;
+}
+
 .modal-wrapper {
     @apply absolute inset-0 flex items-center justify-center z-20 bg-gray-800/40 backdrop-blur;
 }

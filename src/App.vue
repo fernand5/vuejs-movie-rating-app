@@ -2,6 +2,7 @@
 import { computed, reactive, ref } from "vue";
 import MovieItem from "./MovieItem.vue";
 import MovieForm from "./MovieForm.vue";
+import AppModal from "./AppModal.vue";
 /*
 These are Icons that you can use, of course you can use other ones if you prefer.
 */
@@ -176,7 +177,9 @@ function removeRatings() {
 <template>
   <div class="app">
     <div v-if="showMovieForm" class="modal-wrapper">
-      <div class="modal-wrapper-inner">
+      <AppModal
+      :title="form.id ? 'Edit Movie' : 'Add Movie'"
+      @close="hideForm">
         <MovieForm 
         :modelValue="form"
         :errors="errors"
@@ -184,7 +187,7 @@ function removeRatings() {
         @update="saveMovie"
         @cancel="hideForm"
         />
-      </div>
+      </AppModal>
     </div>
     <div class="movie-actions-list-wrapper">
       <div class="movie-actions-list-info">
