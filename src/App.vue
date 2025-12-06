@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref, defineAsyncComponent} from "vue";
+import { computed, reactive, ref, defineAsyncComponent } from "vue";
 import MovieItem from "./MovieItem.vue";
 import { items } from "./movies.json";
 
@@ -175,18 +175,12 @@ function removeRatings() {
 
 <template>
   <div class="app">
-      <AppModal v-if="showMovieForm"
-      :title="form.id ? 'Edit Movie' : 'Add Movie'"
-      @close="hideForm">
-        <MovieForm  
-        v-if="showMovieForm"
-        :modelValue="form"
-        :errors="errors"
-        :genres="genres"
-        @update="saveMovie"
-        @cancel="hideForm"
-        />
+    <transition name="modal-fade">
+      <AppModal v-if="showMovieForm" :title="form.id ? 'Edit Movie' : 'Add Movie'" @close="hideForm">
+        <MovieForm v-if="showMovieForm" :modelValue="form" :errors="errors" :genres="genres" @update="saveMovie"
+          @cancel="hideForm" />
       </AppModal>
+    </transition>
     <div class="movie-actions-list-wrapper">
       <div class="movie-actions-list-info">
         <span>Total Movies: {{ totalMovies }}</span>
@@ -195,34 +189,22 @@ function removeRatings() {
       </div>
       <div class="flex-spacer"></div>
       <div class="movie-actions-list-actions">
-        <button
-          class="self-end movie-actions-list-action-button button-primary justify-self-end"
-          @click="removeRatings"
-        >
+        <button class="self-end movie-actions-list-action-button button-primary justify-self-end"
+          @click="removeRatings">
           Remove Ratings
         </button>
-        <button
-          class="movie-actions-list-action-button"
-          :class="{
-            'button-primary': !showMovieForm,
-            'button-disabled': showMovieForm,
-          }"
-          @click="showForm"
-          :disabled="showMovieForm"
-        >
+        <button class="movie-actions-list-action-button" :class="{
+          'button-primary': !showMovieForm,
+          'button-disabled': showMovieForm,
+        }" @click="showForm" :disabled="showMovieForm">
           Add Movie
         </button>
       </div>
     </div>
     <div class="movie-list">
-      <MovieItem
-
-        v-for="(movie, index) in movies"
-        :key="movie.id"
-        :movie="movie"
-        @update-rating="updateRating(index, $event)"
-        @remove-movie="removeMovie(index)"
-        @edit-movie="editMovie(index)"/>
+      <MovieItem v-for="(movie, index) in movies" :key="movie.id" :movie="movie"
+        @update-rating="updateRating(index, $event)" @remove-movie="removeMovie(index)"
+        @edit-movie="editMovie(index)" />
     </div>
   </div>
 </template>
