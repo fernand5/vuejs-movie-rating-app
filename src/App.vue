@@ -1,11 +1,14 @@
 <script setup>
-import { computed, reactive, ref, defineAsyncComponent } from "vue";
+import { computed, reactive, ref, defineAsyncComponent, useTemplateRef } from "vue";
 import MovieItem from "./MovieItem.vue";
 import { items } from "./movies.json";
+import { onMounted } from "vue";
 
 // async components
 const AppModal = defineAsyncComponent(() => import("@/AppModal.vue"));
 const MovieForm = defineAsyncComponent(() => import("@/MovieForm.vue"));
+
+const formRef = useTemplateRef("movieForm");
 
 const movies = ref(items);
 
@@ -171,13 +174,21 @@ function removeRatings() {
     return movie;
   });
 }
+const focusFirstInputInChild = () => {
+  if (formRef.value && formRef.value.firstInputRef) {
+    formRef.value.firstInputRef.focus();
+  }
+};
+onMounted(() => {
+  focusFirstInputInChild();
+});
 </script>
 
 <template>
   <div class="app">
     <transition name="modal-fade">
       <AppModal v-if="showMovieForm" :title="form.id ? 'Edit Movie' : 'Add Movie'" @close="hideForm">
-        <MovieForm v-if="showMovieForm" :modelValue="form" :errors="errors" :genres="genres" @update="saveMovie"
+        <MovieForm ref="showMovieForm" :modelValue="form" :errors="errors" :genres="genres" @update="saveMovie"
           @cancel="hideForm" />
       </AppModal>
     </transition>

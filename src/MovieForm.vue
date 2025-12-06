@@ -1,4 +1,6 @@
 <script setup>
+
+import { ref, onMounted } from "vue";
 defineProps({
   modelValue: {
     type: Object,
@@ -13,6 +15,17 @@ defineProps({
     required: true
   }
 });
+const firstInputRef = ref(null);
+defineExpose({
+  firstInputRef
+});
+
+onMounted(() => {
+  // You can access the ref here within the child component as well
+  if (firstInputRef.value) {
+    firstInputRef.value.focus(); // Example: focus on the first input
+  }
+});
 const emit = defineEmits(['update', 'cancel']);
 
 
@@ -22,7 +35,7 @@ const emit = defineEmits(['update', 'cancel']);
   <form @submit.prevent="emit('update', modelValue)">
     <div class="movie-form-input-wrapper">
       <label for="name">Name</label>
-      <input type="text" name="name" v-model="modelValue.name" class="movie-form-input" />
+      <input ref="firstInputRef" type="text" name="name" v-model="modelValue.name" class="movie-form-input" />
       <span class="movie-form-error">{{ errors.name }}</span>
     </div>
     <div class="movie-form-input-wrapper">
