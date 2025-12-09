@@ -1,4 +1,6 @@
 <script setup>
+// This is the code from app.vue moved over to a page component
+
 import MovieItem from "@/MovieItem.vue";
 import AppModal from "@/AppModal.vue";
 import { items } from "@/movies.json";
@@ -6,6 +8,7 @@ import { computed, ref, defineAsyncComponent } from "vue";
 
 // async components
 const MovieForm = defineAsyncComponent(() => import("@/MovieForm.vue"));
+
 
 const movies = ref(items);
 const currentMovie = ref();
@@ -74,6 +77,55 @@ function removeRatings() {
 </script>
 
 <template>
-
-<router-view></router-view> 
+  <div class="app">
+    <AppModal
+      :show="showMovieForm"
+      :title="currentMovie?.id ? 'Edit Movie' : 'Add Movie'"
+      @close="hideForm()"
+    >
+      <MovieForm
+        v-if="showMovieForm"
+        @update:modelValue="saveMovie"
+        :modelValue="currentMovie"
+        @cancel="hideForm"
+      />
+    </AppModal>
+    <div class="movie-actions-list-wrapper">
+      <div class="movie-actions-list-info">
+        <span>Total Movies: {{ totalMovies }}</span>
+        <span> / </span>
+        <span>Average Rating: {{ averageRating }}</span>
+      </div>
+      <div class="flex-spacer"></div>
+      <div class="movie-actions-list-actions">
+        <button
+          class="self-end movie-actions-list-action-button button-primary justify-self-end"
+          @click="removeRatings"
+        >
+          Remove Ratings
+        </button>
+        <button
+          class="movie-actions-list-action-button"
+          :class="{
+            'button-primary': !showMovieForm,
+            'button-disabled': showMovieForm,
+          }"
+          @click="showForm"
+          :disabled="showMovieForm"
+        >
+          Add Movie
+        </button>
+      </div>
+    </div>
+    <div class="movie-list">
+      <MovieItem
+        v-for="movie in movies"
+        :key="movie.id"
+        :movie="movie"
+        @edit="editMovie"
+        @remove="removeMovie"
+        @update:rating="updateRating"
+      />
+    </div>
+  </div>
 </template>

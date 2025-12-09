@@ -1,43 +1,60 @@
 <script setup>
-import { StarIcon, TrashIcon, PencilIcon } from "@heroicons/vue/24/solid";
-import { computed } from "vue";
+/*
+These are Icons that you can use, of course you can use other ones if you prefer.
+*/
+import {
+  PencilIcon,
+  StarIcon,
+  TrashIcon,
+  EyeIcon,
+} from "@heroicons/vue/24/solid";
+import MovieStarRating from "./MovieStarRating.vue";
+
 const props = defineProps({
-  movie: {
-    type: Object,
-    required: true,
-  },
+  movie: { type: Object, default: null },
+  index: { type: Number, default: null },
 });
 
-const notRated = computed(() => props.movie.rating === null || props.movie.rating === undefined || props.movie.rating < 0 || typeof props.movie.rating !== "number");
+const emit = defineEmits(["edit", "remove", "update:rating"]);
 
-const emit = defineEmits(["updateRating", "removeMovie", "editMovie"]);
+function updateRating(rating) {
+  emit("update:rating", props.movie.id, rating);
+}
+
+function removeMovie() {
+  emit("remove", props.movie.id);
+}
+
+function editMovie() {
+  emit("edit", props.movie.id);
+}
 </script>
 
 <template>
   <div class="movie-item group">
-
     <div class="movie-item-image-wrapper">
-      <div class="movie-item-star-wrapper">
-        <StarIcon id="rating" class="movie-item-star-rating-icon"
-          :class="[movie.rating ? 'text-yellow-500' : 'text-gray-500']" />
-        <div class="movie-item-star-content-wrapper">
-          <span v-if="!notRated" id="rating-stars" class="movie-item-star-content-rating-rated">
-            {{ movie.rating }}
-          </span>
-          <span v-else class="movie-item-star-content-rating-not-rated">
-            -
-          </span>
-        </div>
-      </div>
-      <img :src="movie.image" class="movie-item-image" alt="" />
+      <MovieStarRating :rating="movie.rating" />
+      <img
+        v-if="movie?.image"
+        :src="movie.image"
+        class="movie-item-image"
+        :alt="movie.name"
+      />
+      <span v-else class="movie-item-no-image">
+        <span class="text-4xl text-white">No image</span>
+      </span>
     </div>
 
     <div class="movie-item-content-wrapper">
       <div class="movie-item-title-wrapper">
         <h3 class="movie-item-title">{{ movie.name }}</h3>
         <div class="movie-item-genres-wrapper">
-          <span v-for="genre in movie.genres" :key="`${movie.id}-${genre}`" class="movie-item-genre-tag">{{ genre
-            }}</span>
+          <span
+            v-for="genre in movie.genres"
+            :key="`${movie.id}-${genre}`"
+            class="movie-item-genre-tag"
+            >{{ genre }}</span
+          >
         </div>
       </div>
       <div class="movie-item-description-wrapper">
@@ -48,24 +65,40 @@ const emit = defineEmits(["updateRating", "removeMovie", "editMovie"]);
           Rating: ({{ movie.rating }}/5)
         </span>
         <div class="movie-item-star-icon-wrapper">
-          <button v-for="star in 5" :key="star" class="movie-item-star-icon-button" :class="[
-            star <= movie.rating ? 'text-yellow-500' : 'text-gray-500',
-          ]" :disabled="star === movie.rating" @click="emit('updateRating', star)">
+          <button
+            v-for="star in 5"
+            :key="star"
+            class="movie-item-star-icon-button"
+            :class="[
+              star <= movie.rating ? 'text-yellow-500' : 'text-gray-500',
+            ]"
+            :disabled="star === movie.rating"
+            @click="updateRating(star)"
+          >
             <StarIcon class="movie-item-star-icon" />
           </button>
         </div>
 
-        <div class="movie-item-actions-list-wrapper">
-          <button class="movie-item-action-edit-button" @click="emit('editMovie')">
-            <PencilIcon class="w-4 h-4" />
-          </button>
-          <button class="movie-item-action-remove-button" @click="emit('removeMovie')">
-            <TrashIcon class="w-4 h-4" />
-          </button>
+        <div
+          class="items-center justify-end hidden space-x-2 group-hover:flex shrink-0"
+        >
+          <div class="movie-item-actions-list-wrapper">
+            <button class="movie-item-action-edit-button" @click="editMovie()">
+              <PencilIcon class="w-4 h-4" />
+            </button>
+            <button
+              class="movie-item-action-remove-button"
+              @click="removeMovie()"
+            >
+              <TrashIcon class="w-4 h-4" />
+            </button>
+            <router-link class="movie-item-action-remove-button" :to="{name: 'movie.detail', params: {id: movie.id}}">
+              <EyeIcon class="w-4 h-4" />
+            </router-link>
+
+          </div>
         </div>
       </div>
     </div>
   </div>
-
-
 </template>
